@@ -1,0 +1,60 @@
+Star Schema Design:
+Tables:
+Weather_Fact:
+ weather_id (Primary Key)
+ date_id (Foreign Key to Date_Dimension)
+ location_id (Foreign Key to Location_Dimension)
+ temperature_id (Foreign Key to Temperature_Dimension)
+ precipitation_id (Foreign Key to Precipitation_Dimension)
+
+Date_Dimension:
+ date_id (Primary Key)
+ date
+ day_of_week
+ month
+ year
+ Location_Dimension:
+ location_id (Primary Key)
+ location_name
+ latitude
+ longitude
+ region
+Temperature_Dimension:
+ temperature_id (Primary Key)
+ temperature
+ humidity
+ wind_speed
+
+Precipitation_Dimension:
+ precipitation_id (Primary Key)
+ precipitation_type
+ precipitation_intensity
+
+Snowflake Schema Transition:
+Tables:
+Weather_Fact:
+ Same as before
+ Date_Dimension:
+ date_id (Primary Key)
+
+Normalized_Location_Dimension:
+ location_id (Primary Key)
+ location_name
+ Normalized_Location_Details:
+ location_id (Foreign Key to Normalized_Location_Dimension)
+ latitude
+ longitude
+ region
+
+Temperature_Dimension:
+Same as before
+
+Precipitation_Dimension:
+Same as before
+
+
+Implementation Steps:
+Design the schema in SQL.
+Implement in a DBMS (e.g., PostgreSQL).
+Insert test data.
+Implement analytical queries.

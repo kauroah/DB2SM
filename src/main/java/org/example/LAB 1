@@ -1,0 +1,64 @@
+-- lab 1
+
+-- Insert values for entity 1 (Contract)
+
+INSERT INTO Value (entity_id, attribute_id, value, valid_from)
+VALUES
+    (1, 1, '123ABC', '2024-01-01'), -- contract_number
+    (1, 2, '2024-01-15', '2024-01-01'), -- date_of_conclusion
+    (1, 3, '10000', '2024-01-01'), -- insurance_amount
+    (1, 4, '5', '2024-01-01'), -- tariff_rate
+    (1, 5, '1', '2024-01-01'), -- branch_code
+    (1, 6, 'AUTO', '2024-01-01'); -- type_of_insurance_code
+
+-- Insert a new attribute value with valid_to date
+INSERT INTO Value (entity_id, attribute_id, value, valid_from, valid_to)
+VALUES
+    (2, 5, '2024-01-15', '2024-01-15', '2024-02-15'); -- Insert new value with valid_from and valid_to
+
+
+
+-- Query all attribute values for entity 1 (Contract)
+SELECT
+    A.attribute_name,
+    V.value
+FROM
+    Value V
+        JOIN
+    Attribute A ON V.attribute_id = A.attribute_id
+WHERE
+    V.entity_id = 1;
+
+
+
+-- Update the insurance amount for contract '123ABC'
+UPDATE Value
+SET value = '15000'
+WHERE entity_id = 1 -- Contract entity
+  AND attribute_id = 3 -- insurance_amount attribute
+  AND valid_from = '2024-01-01';
+
+
+
+-- Delete the phone_number attribute value for branch '1'
+DELETE FROM Value
+WHERE entity_id = 2 -- Branch entity
+  AND attribute_id = 9 -- phone_number attribute
+  AND valid_from = '2024-01-01'; -- Specify the valid_from date
+
+
+-- Update the valid_to date for the current attribute value
+UPDATE Value
+SET valid_to = '2024-01-14' -- Set to the day before the new value becomes valid
+WHERE entity_id = 1 -- Specify the entity_id
+  AND attribute_id = 2 -- Specify the attribute_id
+  AND valid_to IS NULL; -- Update the current value where valid_to is NULL (indicating it's the current value)
+
+-- Insert the new attribute value with valid_from and valid_to dates
+INSERT INTO Value (entity_id, attribute_id, value, valid_from, valid_to)
+VALUES
+    (1, 2, '2024-01-15', '2024-01-15', '9999-12-31'); -- Insert new value with valid_from and valid_to indicating it's valid indefinitely
+
+
+
+SELECT attribute_id FROM Attribute;
