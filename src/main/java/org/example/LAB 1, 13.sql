@@ -62,3 +62,62 @@ VALUES
 
 
 SELECT attribute_id FROM Attribute;
+
+-------------------------------------------------------------------------------------------
+-- LAB 13
+
+
+CREATE TABLE ChangeLog (
+                           log_id SERIAL PRIMARY KEY,
+                           entity_id INT,
+                           attribute_id INT,
+                           old_value VARCHAR,
+                           new_value VARCHAR,
+                           change_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE OR REPLACE FUNCTION log_insurance_amount_changes()
+    RETURNS TRIGGER AS $$
+BEGIN
+    IF OLD.value <> NEW.value THEN
+        INSERT INTO ChangeLog(entity_id, attribute_id, old_value, new_value)
+        VALUES (NEW.entity_id, NEW.attribute_id, OLD.value, NEW.value);
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER insurance_amount_change_trigger
+    AFTER UPDATE ON Value
+    FOR EACH ROW
+    WHEN (OLD.value IS DISTINCT FROM NEW.value AND NEW.attribute_id = 3)
+EXECUTE FUNCTION log_insurance_amount_changes();
+
+
+SELECT * FROM ChangeLog;
+
+
+CREATE OR REPLACE FUNCTION log_insurance_amount_changes()
+    RETURNS TRIGGER AS $$
+BEGIN
+    IF OLD.value <> NEW.value THEN
+        INSERT INTO ChangeLog(entity_id, attribute_id, old_value, new_value)
+        VALUES (NEW.entity_id, NEW.attribute_id, OLD.value, NEW.value);
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER insurance_amount_change_trigger ON Value;
+
+CREATE TRIGGER insurance_amount_change_trigger
+    AFTER UPDATE ON Value
+    FOR EACH ROW
+    WHEN (OLD.value IS DISTINCT FROM NEW.value AND (NEW.attribute_id = 3 OR NEW.attribute_id = 4))
+EXECUTE FUNCTION log_insurance_amount_changes();
+
+
+DROP TRIGGER insurance_amount_change_trigger ON Value;
+DROP FUNCTION log_insurance_amount_changes();
+-----------------------------------------------------------------------------
